@@ -1,20 +1,19 @@
 using Soenneker.Fastly.HttpClients.Abstract;
-using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Tests.HostedUnit;
 
 namespace Soenneker.Fastly.HttpClients.Tests;
 
-[Collection("Collection")]
-public sealed class FastlyOpenApiHttpClientTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public sealed class FastlyOpenApiHttpClientTests : HostedUnitTest
 {
     private readonly IFastlyOpenApiHttpClient _httpclient;
 
-    public FastlyOpenApiHttpClientTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public FastlyOpenApiHttpClientTests(Host host) : base(host)
     {
         _httpclient = Resolve<IFastlyOpenApiHttpClient>(true);
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
