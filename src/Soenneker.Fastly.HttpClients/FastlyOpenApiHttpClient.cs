@@ -11,11 +11,11 @@ using Soenneker.Utils.HttpClientCache.Abstract;
 
 namespace Soenneker.Fastly.HttpClients;
 
-///<inheritdoc cref="IFastlyOpenApiHttpClient"/>
 public sealed class FastlyOpenApiHttpClient : IFastlyOpenApiHttpClient
 {
     private readonly IHttpClientCache _httpClientCache;
     private readonly IConfiguration _config;
+    private readonly string _cacheKey = $"{nameof(FastlyOpenApiHttpClient)}:{Guid.NewGuid():N}";
 
     private const string _prodBaseUrl = "https://api.fastly.com/";
 
@@ -27,7 +27,7 @@ public sealed class FastlyOpenApiHttpClient : IFastlyOpenApiHttpClient
 
     public ValueTask<HttpClient> Get(CancellationToken cancellationToken = default)
     {
-        return _httpClientCache.Get(nameof(FastlyOpenApiHttpClient), (config: _config, baseUrl: _config["Fastly:ClientBaseUrl"] ?? _prodBaseUrl), static state =>
+        return _httpClientCache.Get(_cacheKey, (config: _config, baseUrl: _config["Fastly:ClientBaseUrl"] ?? _prodBaseUrl), static state =>
         {
             var apiKey = state.config.GetValueStrict<string>("Fastly:ApiKey");
             string authHeaderName = state.config["Fastly:AuthHeaderName"] ?? "Fastly-Key";
@@ -45,20 +45,13 @@ public sealed class FastlyOpenApiHttpClient : IFastlyOpenApiHttpClient
         }, cancellationToken);
     }
 
-    /// <summary>
-    /// Releases resources used by the current instance.
-    /// </summary>
     public void Dispose()
     {
-        _httpClientCache.RemoveSync(nameof(FastlyOpenApiHttpClient));
+        _httpClientCache.RemoveSync(_cacheKey);
     }
 
-    /// <summary>
-    /// Asynchronously releases resources used by the current instance.
-    /// </summary>
-    /// <returns>A task that represents the asynchronous operation.</returns>
     public ValueTask DisposeAsync()
     {
-        return _httpClientCache.Remove(nameof(FastlyOpenApiHttpClient));
+        return _httpClientCache.Remove(_cacheKey);
     }
 }

@@ -6,14 +6,14 @@ using System.Threading;
 namespace Soenneker.Fastly.HttpClients.Abstract;
 
 /// <summary>
-/// A .NET thread-safe singleton HttpClient for 
+/// Provides the configured HTTP client used to call the Fastly API.
 /// </summary>
 public interface IFastlyOpenApiHttpClient: IDisposable, IAsyncDisposable
 {
     /// <summary>
-    /// Gets the value.
+    /// Gets the shared Fastly HTTP client.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task containing the result of the operation.</returns>
+    /// <returns>The configured HTTP client.</returns>
     ValueTask<HttpClient> Get(CancellationToken cancellationToken = default);
 }
