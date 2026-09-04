@@ -11,6 +11,7 @@ using Soenneker.Utils.HttpClientCache.Abstract;
 
 namespace Soenneker.Fastly.HttpClients;
 
+/// <inheritdoc cref="IFastlyOpenApiHttpClient" />
 public sealed class FastlyOpenApiHttpClient : IFastlyOpenApiHttpClient
 {
     private readonly IHttpClientCache _httpClientCache;
