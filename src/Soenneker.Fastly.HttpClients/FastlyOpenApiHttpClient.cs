@@ -30,7 +30,7 @@ public sealed class FastlyOpenApiHttpClient : IFastlyOpenApiHttpClient
     {
         return _httpClientCache.Get(_cacheKey, (config: _config, baseUrl: _config["Fastly:ClientBaseUrl"] ?? _prodBaseUrl), static state =>
         {
-            var apiKey = state.config.GetValueStrict<string>("Fastly:ApiKey");
+            var apiKey = state.config.GetStringStrict("Fastly:ApiKey");
             string authHeaderName = state.config["Fastly:AuthHeaderName"] ?? "Fastly-Key";
             string authHeaderValueTemplate = state.config["Fastly:AuthHeaderValueTemplate"] ?? "{token}";
             string authHeaderValue = authHeaderValueTemplate.Replace("{token}", apiKey, StringComparison.Ordinal);
